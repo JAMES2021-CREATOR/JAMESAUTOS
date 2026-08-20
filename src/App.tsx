@@ -1,12 +1,78 @@
-import './App.css'
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 
-function App() {
+import Navbar from "./components/Navbar";
+import LoginPortal from "./components/LoginPortal";
+
+import Home from "./pages/Home";
+import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import AdminForgotPassword from "./pages/AdminForgotPassword";
+
+import CustomerDashboard from "./pages/customer/CustomerDashboard";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import Contact from "./pages/Contact";
+
+const AppContent = () => {
+  const location = useLocation();
+
+  const hideNavbar =
+    location.pathname === "/login" ||
+    location.pathname === "/register" ||
+    location.pathname === "/forgot-password" ||
+    location.pathname === "/admin/forgot-password";
 
   return (
     <>
-     <h1 className='bg-red-700 font-extralight text-7xl'>James autos</h1>
-    </>
-  )
-}
+      {!hideNavbar && <Navbar />}
 
-export default App
+      <Routes>
+        {/* MAIN WEBSITE */}
+        <Route path="/" element={<Home />} />
+
+        <Route path="/contact" element={<Contact />} />
+
+        {/* LOGIN */}
+        <Route path="/login" element={<LoginPortal />} />
+
+        {/* CUSTOMER */}
+        <Route path="/register" element={<Register />} />
+
+        <Route
+          path="/forgot-password"
+          element={<ForgotPassword />}
+        />
+
+        <Route
+          path="/customer/dashboard"
+          element={<CustomerDashboard />}
+        />
+
+        {/* ADMIN */}
+        <Route
+          path="/admin/forgot-password"
+          element={<AdminForgotPassword />}
+        />
+
+        <Route
+          path="/admin/dashboard"
+          element={<AdminDashboard />}
+        />
+      </Routes>
+    </>
+  );
+};
+
+const App = () => {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
+  );
+};
+
+export default App;
