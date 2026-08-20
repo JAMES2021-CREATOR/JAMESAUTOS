@@ -1,14 +1,10 @@
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  useLocation,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import LoginPortal from "./components/LoginPortal";
 
 import Home from "./pages/Home";
+import Cars from "./pages/Cars";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import AdminForgotPassword from "./pages/AdminForgotPassword";
@@ -34,7 +30,7 @@ const AppContent = () => {
       <Routes>
         {/* MAIN WEBSITE */}
         <Route path="/" element={<Home />} />
-
+        <Route path="/cars" element={<Cars />} />
         <Route path="/contact" element={<Contact />} />
 
         {/* LOGIN */}
@@ -43,15 +39,9 @@ const AppContent = () => {
         {/* CUSTOMER */}
         <Route path="/register" element={<Register />} />
 
-        <Route
-          path="/forgot-password"
-          element={<ForgotPassword />}
-        />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
-        <Route
-          path="/customer/dashboard"
-          element={<CustomerDashboard />}
-        />
+        <Route path="/customer/dashboard" element={<CustomerDashboard />} />
 
         {/* ADMIN */}
         <Route
@@ -59,10 +49,7 @@ const AppContent = () => {
           element={<AdminForgotPassword />}
         />
 
-        <Route
-          path="/admin/dashboard"
-          element={<AdminDashboard />}
-        />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
       </Routes>
       <Footer />
     </>
