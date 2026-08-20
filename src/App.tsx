@@ -16,6 +16,7 @@ import AdminForgotPassword from "./pages/AdminForgotPassword";
 import CustomerDashboard from "./pages/customer/CustomerDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Contact from "./pages/Contact";
+import Footer from "./components/Footer";
 
 const AppContent = () => {
   const location = useLocation();
@@ -63,6 +64,7 @@ const AppContent = () => {
           element={<AdminDashboard />}
         />
       </Routes>
+      <Footer />
     </>
   );
 };
