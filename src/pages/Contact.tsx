@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useForm } from "@formspree/react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
@@ -18,35 +18,32 @@ import {
 import lexus2 from "../assets/Image/lexus2.jpg";
 
 const Contact = () => {
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = () => {
-    setSubmitted(true);
-  };
+  const [state, handleSubmit, reset] = useForm("xbgrbaqk");
 
   return (
     <main className="min-h-screen bg-[#080d14] text-white">
 
       {/* =====================================================
-          HERO SECTION
+          HERO
       ====================================================== */}
       <section className="relative min-h-[620px] overflow-hidden">
 
-        {/* Background */}
+        {/* Background Image */}
         <div className="absolute inset-0">
-
           <img
             src={lexus2}
-            alt="JamesAutos premium vehicle"
+            alt="JamesAutos Lexus vehicle"
             className="h-full w-full object-cover"
           />
 
-          <div className="absolute inset-0 bg-black/65" />
+          {/* Dark Overlay */}
+          <div className="absolute inset-0 bg-black/60" />
 
-          <div className="absolute bg-gradient-to-r from-[#080d14] via-[#080d14]/90 to-transparent" />
+          {/* Left Gradient */}
+          <div className="absolute bg-gradient-to-r from-[#080d14] via-[#080d14]/80 to-transparent" />
 
+          {/* Bottom Gradient */}
           <div className="absolute  bg-gradient-to-t from-[#080d14] via-transparent to-[#080d14]/20" />
-
         </div>
 
         {/* Hero Content */}
@@ -61,7 +58,6 @@ const Contact = () => {
 
             {/* Breadcrumb */}
             <div className="mb-8 flex items-center gap-2 text-sm text-gray-400">
-
               <Link
                 to="/"
                 className="transition hover:text-yellow-500"
@@ -74,29 +70,24 @@ const Contact = () => {
               <span className="text-yellow-500">
                 Contact
               </span>
-
             </div>
 
-            {/* Small Heading */}
+            {/* Label */}
             <div className="mb-6 flex items-center gap-3">
-
               <span className="h-px w-12 bg-yellow-500" />
 
               <span className="text-sm font-semibold uppercase tracking-[0.3em] text-yellow-500">
                 Get In Touch
               </span>
-
             </div>
 
             {/* Heading */}
             <h1 className="text-5xl font-black leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
-
               Let's Find Your
 
               <span className="block text-yellow-500">
                 Dream Car.
               </span>
-
             </h1>
 
             <p className="mt-7 max-w-2xl text-base leading-8 text-gray-300 sm:text-lg">
@@ -105,7 +96,7 @@ const Contact = () => {
               is ready to help.
             </p>
 
-            {/* Hero Buttons */}
+            {/* Buttons */}
             <div className="mt-9 flex flex-col gap-4 sm:flex-row">
 
               <a
@@ -113,7 +104,6 @@ const Contact = () => {
                 className="flex items-center justify-center gap-3 rounded-lg bg-yellow-500 px-7 py-4 font-semibold text-black shadow-lg shadow-yellow-500/20 transition hover:scale-[1.02] hover:bg-yellow-400"
               >
                 <Phone size={19} />
-
                 Call Us
               </a>
 
@@ -124,14 +114,11 @@ const Contact = () => {
                 className="flex items-center justify-center gap-3 rounded-lg border border-white/30 bg-white/5 px-7 py-4 font-semibold backdrop-blur-sm transition hover:border-yellow-500 hover:bg-yellow-500/10"
               >
                 <MessageCircle size={19} />
-
                 WhatsApp
               </a>
 
             </div>
-
           </motion.div>
-
         </div>
       </section>
 
@@ -159,16 +146,16 @@ const Contact = () => {
               </p>
 
               <h2 className="mt-4 text-3xl font-black sm:text-4xl">
-                We're Here To
+                We're Here To{" "}
                 <span className="text-yellow-500">
-                  {" "}Help.
+                  Help.
                 </span>
               </h2>
 
               <p className="mt-5 leading-7 text-gray-400">
-                Whether you are ready to purchase a vehicle or simply
-                need more information, our team is available to assist
-                you.
+                Whether you are ready to purchase a vehicle or
+                simply need more information, our team is available
+                to assist you.
               </p>
 
               {/* Contact Cards */}
@@ -179,7 +166,6 @@ const Contact = () => {
                   href="tel:08051388846"
                   className="group flex items-center gap-5 rounded-2xl border border-white/10 bg-[#111720] p-5 transition hover:border-yellow-500/40"
                 >
-
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-yellow-500/10 text-yellow-500 transition group-hover:bg-yellow-500 group-hover:text-black">
                     <Phone size={22} />
                   </div>
@@ -193,7 +179,6 @@ const Contact = () => {
                       08051388846
                     </p>
                   </div>
-
                 </a>
 
                 {/* Email */}
@@ -201,7 +186,6 @@ const Contact = () => {
                   href="mailto:support@jamesautos.com"
                   className="group flex items-center gap-5 rounded-2xl border border-white/10 bg-[#111720] p-5 transition hover:border-yellow-500/40"
                 >
-
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-yellow-500/10 text-yellow-500 transition group-hover:bg-yellow-500 group-hover:text-black">
                     <Mail size={22} />
                   </div>
@@ -215,12 +199,10 @@ const Contact = () => {
                       support@jamesautos.com
                     </p>
                   </div>
-
                 </a>
 
                 {/* Location */}
                 <div className="flex items-center gap-5 rounded-2xl border border-white/10 bg-[#111720] p-5">
-
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-yellow-500/10 text-yellow-500">
                     <MapPin size={22} />
                   </div>
@@ -234,12 +216,10 @@ const Contact = () => {
                       Nigeria
                     </p>
                   </div>
-
                 </div>
 
                 {/* Hours */}
                 <div className="flex items-center gap-5 rounded-2xl border border-white/10 bg-[#111720] p-5">
-
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-yellow-500/10 text-yellow-500">
                     <Clock size={22} />
                   </div>
@@ -257,7 +237,6 @@ const Contact = () => {
                       8:00 AM - 6:00 PM
                     </p>
                   </div>
-
                 </div>
 
               </div>
@@ -273,14 +252,13 @@ const Contact = () => {
                   />
 
                   <div>
-
                     <h3 className="font-bold">
                       Need Immediate Assistance?
                     </h3>
 
                     <p className="mt-2 text-sm leading-6 text-gray-400">
-                      Call our team directly and we'll be happy to
-                      assist you with your vehicle enquiry.
+                      Call our team directly and we'll be happy
+                      to assist you with your vehicle enquiry.
                     </p>
 
                     <a
@@ -288,20 +266,17 @@ const Contact = () => {
                       className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-yellow-500 hover:text-yellow-400"
                     >
                       Call 08051388846
-
                       <ArrowRight size={16} />
                     </a>
-
                   </div>
 
                 </div>
-
               </div>
 
             </motion.div>
 
             {/* =================================================
-                CONTACT FORM
+                FORM
             ================================================== */}
             <motion.div
               initial={{ opacity: 0, x: 40 }}
@@ -311,6 +286,7 @@ const Contact = () => {
               className="rounded-2xl border border-white/10 bg-[#111720] p-6 shadow-2xl sm:p-8 lg:p-10"
             >
 
+              {/* FORM HEADER */}
               <div className="mb-8">
 
                 <p className="text-sm font-semibold uppercase tracking-[0.3em] text-yellow-500">
@@ -328,9 +304,11 @@ const Contact = () => {
 
               </div>
 
-              {submitted ? (
+              {/* =================================================
+                  SUCCESS
+              ================================================== */}
+              {state.succeeded ? (
 
-                /* SUCCESS MESSAGE */
                 <div className="flex min-h-[450px] flex-col items-center justify-center text-center">
 
                   <div className="flex h-20 w-20 items-center justify-center rounded-full bg-yellow-500/10 text-yellow-500">
@@ -342,13 +320,14 @@ const Contact = () => {
                   </h3>
 
                   <p className="mt-3 max-w-md text-gray-400">
-                    Thank you for contacting JamesAutos. Our team
-                    will review your message and get back to you.
+                    Thank you for contacting JamesAutos. Your
+                    message has been received and our team will
+                    get back to you.
                   </p>
 
                   <button
                     type="button"
-                    onClick={() => setSubmitted(false)}
+                    onClick={reset}
                     className="mt-7 rounded-lg bg-yellow-500 px-6 py-3 font-semibold text-black transition hover:bg-yellow-400"
                   >
                     Send Another Message
@@ -358,9 +337,10 @@ const Contact = () => {
 
               ) : (
 
+                /* =================================================
+                   FORM
+                ================================================== */
                 <form
-                   action="https://formspree.io/f/xbgrbaqk"
-                  method="POST"
                   onSubmit={handleSubmit}
                   className="space-y-6"
                 >
@@ -369,7 +349,6 @@ const Contact = () => {
                   <div className="grid gap-5 sm:grid-cols-2">
 
                     <div>
-
                       <label
                         htmlFor="name"
                         className="mb-2 block text-sm font-medium text-gray-200"
@@ -385,11 +364,9 @@ const Contact = () => {
                         required
                         className="h-13 w-full rounded-lg border border-white/10 bg-[#080d14] px-4 text-sm text-white outline-none transition placeholder:text-gray-600 focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500/20"
                       />
-
                     </div>
 
                     <div>
-
                       <label
                         htmlFor="email"
                         className="mb-2 block text-sm font-medium text-gray-200"
@@ -405,7 +382,6 @@ const Contact = () => {
                         required
                         className="h-13 w-full rounded-lg border border-white/10 bg-[#080d14] px-4 text-sm text-white outline-none transition placeholder:text-gray-600 focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500/20"
                       />
-
                     </div>
 
                   </div>
@@ -414,7 +390,6 @@ const Contact = () => {
                   <div className="grid gap-5 sm:grid-cols-2">
 
                     <div>
-
                       <label
                         htmlFor="phone"
                         className="mb-2 block text-sm font-medium text-gray-200"
@@ -429,11 +404,9 @@ const Contact = () => {
                         placeholder="08051388846"
                         className="h-13 w-full rounded-lg border border-white/10 bg-[#080d14] px-4 text-sm text-white outline-none transition placeholder:text-gray-600 focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500/20"
                       />
-
                     </div>
 
                     <div>
-
                       <label
                         htmlFor="vehicle"
                         className="mb-2 block text-sm font-medium text-gray-200"
@@ -447,7 +420,6 @@ const Contact = () => {
                         defaultValue=""
                         className="h-13 w-full rounded-lg border border-white/10 bg-[#080d14] px-4 text-sm text-white outline-none transition focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500/20"
                       >
-
                         <option value="" disabled>
                           Select a vehicle
                         </option>
@@ -476,12 +448,14 @@ const Contact = () => {
                           BMW X5
                         </option>
 
+                        <option value="Lexus">
+                          Lexus
+                        </option>
+
                         <option value="Other">
                           Other
                         </option>
-
                       </select>
-
                     </div>
 
                   </div>
@@ -528,35 +502,51 @@ const Contact = () => {
 
                   </div>
 
+                  {/* Formspree Error */}
+                  {state.errors && (
+                    <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400">
+                      Something went wrong while sending your
+                      message. Please try again.
+                    </div>
+                  )}
+
                   {/* Submit */}
                   <button
                     type="submit"
-                    className="group flex h-14 w-full items-center justify-center gap-3 rounded-lg bg-yellow-500 font-bold text-black shadow-lg shadow-yellow-500/10 transition duration-300 hover:scale-[1.01] hover:bg-yellow-400"
+                    disabled={state.submitting}
+                    className="group flex h-14 w-full items-center justify-center gap-3 rounded-lg bg-yellow-500 font-bold text-black shadow-lg shadow-yellow-500/10 transition duration-300 hover:scale-[1.01] hover:bg-yellow-400 disabled:cursor-not-allowed disabled:opacity-60"
                   >
 
-                    <Send size={19} />
+                    {state.submitting ? (
+                      <>
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <Send size={19} />
 
-                    Send Message
+                        Send Message
 
-                    <ArrowRight
-                      size={19}
-                      className="transition-transform group-hover:translate-x-1"
-                    />
+                        <ArrowRight
+                          size={19}
+                          className="transition-transform group-hover:translate-x-1"
+                        />
+                      </>
+                    )}
 
                   </button>
 
                   <p className="text-center text-xs text-gray-500">
-                    Your information will be handled securely.
+                    Your information will be handled securely by
+                    JamesAutos.
                   </p>
 
                 </form>
-
               )}
 
             </motion.div>
 
           </div>
-
         </div>
       </section>
 
@@ -569,6 +559,7 @@ const Contact = () => {
 
           <div className="grid gap-6 md:grid-cols-3">
 
+            {/* Trust */}
             <div className="rounded-2xl border border-white/10 bg-[#111720] p-7 text-center">
 
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-yellow-500/10 text-yellow-500">
@@ -586,6 +577,7 @@ const Contact = () => {
 
             </div>
 
+            {/* Quality */}
             <div className="rounded-2xl border border-white/10 bg-[#111720] p-7 text-center">
 
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-yellow-500/10 text-yellow-500">
@@ -603,6 +595,7 @@ const Contact = () => {
 
             </div>
 
+            {/* Support */}
             <div className="rounded-2xl border border-white/10 bg-[#111720] p-7 text-center">
 
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-yellow-500/10 text-yellow-500">
@@ -621,7 +614,6 @@ const Contact = () => {
             </div>
 
           </div>
-
         </div>
       </section>
 
@@ -669,14 +661,11 @@ const Contact = () => {
               className="flex items-center justify-center gap-3 rounded-lg border-2 border-black px-8 py-4 font-semibold text-black transition hover:bg-black hover:text-white"
             >
               <Phone size={19} />
-
               Call Us
             </a>
 
           </div>
-
         </div>
-
       </section>
 
     </main>
