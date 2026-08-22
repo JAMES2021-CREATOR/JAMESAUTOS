@@ -190,7 +190,7 @@ const Cars = () => {
     <div className="absolute inset-0 bg-black/55" />
 
     {/* Left dark gradient for readable text */}
-    <div className="absolute inset-0 bg-gradient-to-r from-[#080d14] via-[#080d14]/85 to-[#080d14]/20" />
+    <div className="absolute  bg-gradient-to-r from-[#080d14] via-[#080d14]/85 to-[#080d14]/20" />
 
     {/* Bottom gradient */}
     <div className="absolute inset-0 bg-gradient-to-t from-[#080d14] via-transparent to-black/20" />

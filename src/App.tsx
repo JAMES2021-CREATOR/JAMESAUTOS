@@ -5,6 +5,7 @@ import LoginPortal from "./components/LoginPortal";
 
 import Home from "./pages/Home";
 import Cars from "./pages/Cars";
+import About from "./components/About";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import AdminForgotPassword from "./pages/AdminForgotPassword";
@@ -13,6 +14,7 @@ import CustomerDashboard from "./pages/customer/CustomerDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Contact from "./pages/Contact";
 import Footer from "./components/Footer";
+import Services from "./pages/Services";
 
 const AppContent = () => {
   const location = useLocation();
@@ -31,6 +33,8 @@ const AppContent = () => {
         {/* MAIN WEBSITE */}
         <Route path="/" element={<Home />} />
         <Route path="/cars" element={<Cars />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/services" element={<Services />} />
         <Route path="/contact" element={<Contact />} />
 
         {/* LOGIN */}

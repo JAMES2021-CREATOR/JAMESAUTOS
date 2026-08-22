@@ -77,9 +77,9 @@ const Home = () => {
 
           <div className="absolute inset-0 bg-black/10" />
 
-          <div className="absolute inset-0 bg-gradient-to-r from-[#080d14] via-[#080d14]/85 to-transparent" />
+          <div className="absolute  bg-gradient-to-r from-[#080d14] via-[#080d14]/85 to-transparent" />
 
-          <div className="absolute inset-0 bg-gradient-to-t from-[#080d14] via-transparent to-black/20" />
+          <div className="absolute  bg-gradient-to-t from-[#080d14] via-transparent to-black/20" />
         </div>
 
         {/* Hero Content */}
