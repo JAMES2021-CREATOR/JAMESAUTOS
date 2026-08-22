@@ -1,6 +1,8 @@
 import { useState } from "react";
 import type { FormEvent, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
+
 import {
   User,
   ShieldCheck,
@@ -14,6 +16,7 @@ import {
   Headphones,
   Phone,
   Shield,
+  Loader2,
 } from "lucide-react";
 
 interface BenefitProps {
@@ -25,65 +28,186 @@ interface BenefitProps {
 const LoginPortal = () => {
   const navigate = useNavigate();
 
-  const [showCustomerPassword, setShowCustomerPassword] = useState(false);
-  const [showAdminPassword, setShowAdminPassword] = useState(false);
+  // ==============================
+  // PASSWORD VISIBILITY
+  // ==============================
+
+  const [showCustomerPassword, setShowCustomerPassword] =
+    useState(false);
+
+  const [showAdminPassword, setShowAdminPassword] =
+    useState(false);
+
+  // ==============================
+  // CUSTOMER
+  // ==============================
 
   const [customerEmail, setCustomerEmail] = useState("");
   const [customerPassword, setCustomerPassword] = useState("");
 
+  const [customerRemember, setCustomerRemember] = useState(true);
+
+  const [customerLoading, setCustomerLoading] = useState(false);
+  const [customerError, setCustomerError] = useState("");
+
+  // ==============================
+  // ADMIN
+  // ==============================
+
   const [adminEmail, setAdminEmail] = useState("");
   const [adminPassword, setAdminPassword] = useState("");
 
-  const [customerRemember, setCustomerRemember] = useState(true);
   const [adminRemember, setAdminRemember] = useState(true);
 
-  // ==============================
+  const [adminLoading, setAdminLoading] = useState(false);
+  const [adminError, setAdminError] = useState("");
+
+  // =====================================================
   // CUSTOMER LOGIN
-  // ==============================
-  const handleCustomerLogin = (e: FormEvent<HTMLFormElement>) => {
+  // =====================================================
+
+  const handleCustomerLogin = async (
+    e: FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
 
-    if (!customerEmail || !customerPassword) {
-      alert("Please enter your email and password.");
+    setCustomerError("");
+
+    if (!customerEmail.trim() || !customerPassword) {
+      setCustomerError(
+        "Please enter your email and password."
+      );
       return;
     }
 
-    if (customerRemember) {
-      localStorage.setItem("customerRemember", "true");
-    }
+    try {
+      setCustomerLoading(true);
 
-    // Later connect Supabase authentication here
-    navigate("/customer/dashboard");
+      const { data, error } =
+        await supabase.auth.signInWithPassword({
+          email: customerEmail.trim(),
+          password: customerPassword,
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      if (!data.user) {
+        throw new Error("Unable to log you in.");
+      }
+
+      // Remember login preference
+      if (customerRemember) {
+        localStorage.setItem(
+          "customerRemember",
+          "true"
+        );
+      } else {
+        localStorage.removeItem(
+          "customerRemember"
+        );
+      }
+
+      // Customer successfully logged in
+      navigate("/customer/dashboard");
+
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Login failed. Please try again.";
+
+      setCustomerError(message);
+
+    } finally {
+      setCustomerLoading(false);
+    }
   };
 
-  // ==============================
+  // =====================================================
   // ADMIN LOGIN
-  // ==============================
-  const handleAdminLogin = (e: FormEvent<HTMLFormElement>) => {
+  // =====================================================
+
+  const handleAdminLogin = async (
+    e: FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
 
-    if (!adminEmail || !adminPassword) {
-      alert("Please enter your admin email and password.");
+    setAdminError("");
+
+    if (!adminEmail.trim() || !adminPassword) {
+      setAdminError(
+        "Please enter your admin email and password."
+      );
       return;
     }
 
-    if (adminRemember) {
-      localStorage.setItem("adminRemember", "true");
-    }
+    try {
+      setAdminLoading(true);
 
-    // Later connect Supabase authentication here
-    navigate("/admin/dashboard");
+      const { data, error } =
+        await supabase.auth.signInWithPassword({
+          email: adminEmail.trim(),
+          password: adminPassword,
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      if (!data.user) {
+        throw new Error("Unable to log you in.");
+      }
+
+      // Remember login preference
+      if (adminRemember) {
+        localStorage.setItem(
+          "adminRemember",
+          "true"
+        );
+      } else {
+        localStorage.removeItem(
+          "adminRemember"
+        );
+      }
+
+      /*
+       * TEMPORARY ADMIN LOGIN
+       *
+       * Later we will check the user's role
+       * from Supabase before allowing access.
+       */
+
+      navigate("/admin/dashboard");
+
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Admin login failed. Please try again.";
+
+      setAdminError(message);
+
+    } finally {
+      setAdminLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#080808] text-white">
 
-      {/* ================= BACKGROUND ================= */}
+      {/* =====================================================
+          BACKGROUND
+      ====================================================== */}
+
       <div className="fixed inset-0 -z-10">
+
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: "url('/images/jamesautos-bg.jpg')",
+            backgroundImage:
+              "url('/images/jamesautos-bg.jpg')",
           }}
         />
 
@@ -91,14 +215,20 @@ const LoginPortal = () => {
 
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/85 to-black" />
 
-        {/* GOLD GLOW */}
         <div className="absolute left-1/2 top-0 h-[500px] w-[700px] -translate-x-1/2 rounded-full bg-[#F5C400]/10 blur-[140px]" />
+
       </div>
 
-      {/* ================= MAIN ================= */}
+      {/* =====================================================
+          MAIN
+      ====================================================== */}
+
       <main className="mx-auto w-full max-w-[1400px] px-5 py-8 sm:px-8 lg:px-12">
 
-        {/* ================= LOGO ================= */}
+        {/* =====================================================
+            LOGO
+        ====================================================== */}
+
         <div className="mb-10 text-center">
 
           <button
@@ -107,20 +237,22 @@ const LoginPortal = () => {
             className="group cursor-pointer"
           >
 
-            {/* CAR LOGO + BRAND */}
             <div className="flex items-center justify-center gap-3">
 
-              {/* CAR LOGO */}
-
-              {/* BRAND */}
               <h1 className="text-4xl font-black tracking-[0.12em] sm:text-5xl">
-                <span className="text-white">JAMES</span>
-                <span className="text-[#F5C400]">AUTOS</span>
+
+                <span className="text-white">
+                  JAMES
+                </span>
+
+                <span className="text-[#F5C400]">
+                  AUTOS
+                </span>
+
               </h1>
 
             </div>
 
-            {/* UNDERLINE */}
             <div className="mt-3 flex items-center justify-center gap-4">
 
               <span className="h-px w-12 bg-[#F5C400]/50" />
@@ -132,18 +264,25 @@ const LoginPortal = () => {
               <span className="h-px w-12 bg-[#F5C400]/50" />
 
             </div>
+
           </button>
+
         </div>
 
-        {/* ================= LOGIN CONTAINER ================= */}
+        {/* =====================================================
+            LOGIN CONTAINER
+        ====================================================== */}
+
         <div className="grid gap-8 lg:grid-cols-[1fr_auto_1fr] lg:items-stretch">
 
-          {/* =====================================================
+          {/* ===================================================
               CUSTOMER LOGIN
-          ====================================================== */}
+          ==================================================== */}
+
           <section className="rounded-2xl border border-[#F5C400]/30 bg-[#111111]/95 p-6 shadow-2xl backdrop-blur-xl transition duration-300 hover:border-[#F5C400]/60 sm:p-8 lg:p-10">
 
             {/* ICON */}
+
             <div className="flex justify-center">
 
               <div className="flex h-24 w-24 items-center justify-center rounded-full border-2 border-[#F5C400] bg-[#F5C400]/10 shadow-[0_0_30px_rgba(245,196,0,0.18)]">
@@ -155,6 +294,7 @@ const LoginPortal = () => {
                 />
 
               </div>
+
             </div>
 
             <h2 className="mt-6 text-center text-2xl font-bold tracking-wide sm:text-3xl">
@@ -169,12 +309,23 @@ const LoginPortal = () => {
               book test drives and more.
             </p>
 
+            {/* CUSTOMER ERROR */}
+
+            {customerError && (
+              <div className="mt-6 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm leading-5 text-red-400">
+                {customerError}
+              </div>
+            )}
+
+            {/* CUSTOMER FORM */}
+
             <form
               onSubmit={handleCustomerLogin}
               className="mt-7 space-y-5"
             >
 
               {/* EMAIL */}
+
               <div>
 
                 <label className="mb-2 block text-sm font-medium text-gray-200">
@@ -191,16 +342,21 @@ const LoginPortal = () => {
                   <input
                     type="email"
                     value={customerEmail}
-                    onChange={(e) => setCustomerEmail(e.target.value)}
+                    onChange={(e) =>
+                      setCustomerEmail(e.target.value)
+                    }
                     placeholder="Enter your email"
+                    autoComplete="email"
                     required
                     className="h-14 w-full rounded-lg border border-gray-700 bg-[#171717] pl-12 pr-4 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-[#F5C400] focus:ring-1 focus:ring-[#F5C400]"
                   />
 
                 </div>
+
               </div>
 
               {/* PASSWORD */}
+
               <div>
 
                 <label className="mb-2 block text-sm font-medium text-gray-200">
@@ -215,10 +371,17 @@ const LoginPortal = () => {
                   />
 
                   <input
-                    type={showCustomerPassword ? "text" : "password"}
+                    type={
+                      showCustomerPassword
+                        ? "text"
+                        : "password"
+                    }
                     value={customerPassword}
-                    onChange={(e) => setCustomerPassword(e.target.value)}
+                    onChange={(e) =>
+                      setCustomerPassword(e.target.value)
+                    }
                     placeholder="Enter your password"
+                    autoComplete="current-password"
                     required
                     className="h-14 w-full rounded-lg border border-gray-700 bg-[#171717] pl-12 pr-12 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-[#F5C400] focus:ring-1 focus:ring-[#F5C400]"
                   />
@@ -226,23 +389,29 @@ const LoginPortal = () => {
                   <button
                     type="button"
                     onClick={() =>
-                      setShowCustomerPassword(!showCustomerPassword)
+                      setShowCustomerPassword(
+                        !showCustomerPassword
+                      )
                     }
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 transition hover:text-[#F5C400]"
                     aria-label="Toggle customer password visibility"
                   >
+
                     {showCustomerPassword ? (
                       <EyeOff size={19} />
                     ) : (
                       <Eye size={19} />
                     )}
+
                   </button>
 
                 </div>
+
               </div>
 
               {/* REMEMBER / FORGOT */}
-              <div className="flex items-center justify-between gap-3 text-sm">
+
+              <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
 
                 <label className="flex cursor-pointer items-center gap-2 text-gray-300">
 
@@ -250,7 +419,9 @@ const LoginPortal = () => {
                     type="checkbox"
                     checked={customerRemember}
                     onChange={(e) =>
-                      setCustomerRemember(e.target.checked)
+                      setCustomerRemember(
+                        e.target.checked
+                      )
                     }
                     className="h-4 w-4 accent-[#F5C400]"
                   />
@@ -261,7 +432,9 @@ const LoginPortal = () => {
 
                 <button
                   type="button"
-                  onClick={() => navigate("/forgot-password")}
+                  onClick={() =>
+                    navigate("/forgot-password")
+                  }
                   className="text-[#F5C400] transition hover:text-[#FFD633]"
                 >
                   Forgot Password?
@@ -269,29 +442,47 @@ const LoginPortal = () => {
 
               </div>
 
-              {/* LOGIN */}
+              {/* LOGIN BUTTON */}
+
               <button
                 type="submit"
-                className="group flex h-14 w-full items-center justify-center gap-3 rounded-lg bg-gradient-to-r from-[#D4A900] to-[#F5C400] font-bold text-black shadow-lg shadow-[#F5C400]/20 transition duration-300 hover:scale-[1.01] hover:from-[#F5C400] hover:to-[#FFD633]"
+                disabled={customerLoading}
+                className="group flex h-14 w-full items-center justify-center gap-3 rounded-lg bg-gradient-to-r from-[#D4A900] to-[#F5C400] font-bold text-black shadow-lg shadow-[#F5C400]/20 transition duration-300 hover:scale-[1.01] hover:from-[#F5C400] hover:to-[#FFD633] disabled:cursor-not-allowed disabled:opacity-60"
               >
-                LOGIN
 
-                <ArrowRight
-                  size={20}
-                  className="transition-transform group-hover:translate-x-1"
-                />
+                {customerLoading ? (
+                  <>
+                    <Loader2
+                      size={20}
+                      className="animate-spin"
+                    />
+
+                    LOGGING IN...
+                  </>
+                ) : (
+                  <>
+                    LOGIN
+
+                    <ArrowRight
+                      size={20}
+                      className="transition-transform group-hover:translate-x-1"
+                    />
+                  </>
+                )}
+
               </button>
 
             </form>
 
             {/* CREATE ACCOUNT */}
+
             <div className="mt-6">
 
               <div className="flex items-center gap-4">
 
                 <span className="h-px flex-1 bg-gray-700" />
 
-                <span className="text-sm text-gray-300">
+                <span className="text-center text-sm text-gray-300">
                   Don't have an account?
                 </span>
 
@@ -304,14 +495,17 @@ const LoginPortal = () => {
                 onClick={() => navigate("/register")}
                 className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-[#F5C400] bg-transparent text-sm font-medium text-[#F5C400] transition hover:bg-[#F5C400]/10"
               >
+
                 <UserPlus size={18} />
 
                 CREATE ACCOUNT
+
               </button>
 
             </div>
 
             {/* BENEFITS */}
+
             <div className="mt-6 grid grid-cols-3 border-t border-gray-700 pt-6">
 
               <Benefit
@@ -336,9 +530,10 @@ const LoginPortal = () => {
 
           </section>
 
-          {/* =====================================================
-              OR DIVIDER
-          ====================================================== */}
+          {/* ===================================================
+              DESKTOP DIVIDER
+          ==================================================== */}
+
           <div className="hidden items-center justify-center lg:flex">
 
             <div className="relative h-full w-px bg-gray-700">
@@ -351,12 +546,15 @@ const LoginPortal = () => {
 
           </div>
 
-          {/* MOBILE OR */}
+          {/* ===================================================
+              MOBILE DIVIDER
+          ==================================================== */}
+
           <div className="flex items-center gap-4 lg:hidden">
 
             <span className="h-px flex-1 bg-gray-700" />
 
-            <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#F5C400]/30 bg-[#0c0c0c] text-sm text-[#F5C400]">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#F5C400]/30 bg-[#0c0c0c] text-sm text-[#F5C400]">
               or
             </span>
 
@@ -364,12 +562,14 @@ const LoginPortal = () => {
 
           </div>
 
-          {/* =====================================================
+          {/* ===================================================
               ADMIN LOGIN
-          ====================================================== */}
+          ==================================================== */}
+
           <section className="rounded-2xl border border-[#F5C400]/30 bg-[#111111]/95 p-6 shadow-2xl backdrop-blur-xl transition duration-300 hover:border-[#F5C400]/60 sm:p-8 lg:p-10">
 
             {/* ICON */}
+
             <div className="flex justify-center">
 
               <div className="flex h-24 w-24 items-center justify-center rounded-full border-2 border-[#F5C400] bg-[#F5C400]/10 shadow-[0_0_30px_rgba(245,196,0,0.18)]">
@@ -396,12 +596,23 @@ const LoginPortal = () => {
               JamesAutos personnel only.
             </p>
 
+            {/* ADMIN ERROR */}
+
+            {adminError && (
+              <div className="mt-6 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm leading-5 text-red-400">
+                {adminError}
+              </div>
+            )}
+
+            {/* ADMIN FORM */}
+
             <form
               onSubmit={handleAdminLogin}
               className="mt-7 space-y-5"
             >
 
-              {/* ADMIN EMAIL */}
+              {/* EMAIL */}
+
               <div>
 
                 <label className="mb-2 block text-sm font-medium text-gray-200">
@@ -418,8 +629,11 @@ const LoginPortal = () => {
                   <input
                     type="email"
                     value={adminEmail}
-                    onChange={(e) => setAdminEmail(e.target.value)}
+                    onChange={(e) =>
+                      setAdminEmail(e.target.value)
+                    }
                     placeholder="Enter admin email"
+                    autoComplete="email"
                     required
                     className="h-14 w-full rounded-lg border border-gray-700 bg-[#171717] pl-12 pr-4 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-[#F5C400] focus:ring-1 focus:ring-[#F5C400]"
                   />
@@ -428,7 +642,8 @@ const LoginPortal = () => {
 
               </div>
 
-              {/* ADMIN PASSWORD */}
+              {/* PASSWORD */}
+
               <div>
 
                 <label className="mb-2 block text-sm font-medium text-gray-200">
@@ -443,10 +658,17 @@ const LoginPortal = () => {
                   />
 
                   <input
-                    type={showAdminPassword ? "text" : "password"}
+                    type={
+                      showAdminPassword
+                        ? "text"
+                        : "password"
+                    }
                     value={adminPassword}
-                    onChange={(e) => setAdminPassword(e.target.value)}
+                    onChange={(e) =>
+                      setAdminPassword(e.target.value)
+                    }
                     placeholder="Enter your password"
+                    autoComplete="current-password"
                     required
                     className="h-14 w-full rounded-lg border border-gray-700 bg-[#171717] pl-12 pr-12 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-[#F5C400] focus:ring-1 focus:ring-[#F5C400]"
                   />
@@ -454,16 +676,20 @@ const LoginPortal = () => {
                   <button
                     type="button"
                     onClick={() =>
-                      setShowAdminPassword(!showAdminPassword)
+                      setShowAdminPassword(
+                        !showAdminPassword
+                      )
                     }
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 transition hover:text-[#F5C400]"
                     aria-label="Toggle admin password visibility"
                   >
+
                     {showAdminPassword ? (
                       <EyeOff size={19} />
                     ) : (
                       <Eye size={19} />
                     )}
+
                   </button>
 
                 </div>
@@ -471,7 +697,8 @@ const LoginPortal = () => {
               </div>
 
               {/* REMEMBER / FORGOT */}
-              <div className="flex items-center justify-between gap-3 text-sm">
+
+              <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
 
                 <label className="flex cursor-pointer items-center gap-2 text-gray-300">
 
@@ -479,7 +706,9 @@ const LoginPortal = () => {
                     type="checkbox"
                     checked={adminRemember}
                     onChange={(e) =>
-                      setAdminRemember(e.target.checked)
+                      setAdminRemember(
+                        e.target.checked
+                      )
                     }
                     className="h-4 w-4 accent-[#F5C400]"
                   />
@@ -490,7 +719,9 @@ const LoginPortal = () => {
 
                 <button
                   type="button"
-                  onClick={() => navigate("/admin/forgot-password")}
+                  onClick={() =>
+                    navigate("/admin/forgot-password")
+                  }
                   className="text-[#F5C400] transition hover:text-[#FFD633]"
                 >
                   Forgot Password?
@@ -498,23 +729,40 @@ const LoginPortal = () => {
 
               </div>
 
-              {/* ADMIN LOGIN */}
+              {/* ADMIN LOGIN BUTTON */}
+
               <button
                 type="submit"
-                className="group flex h-14 w-full items-center justify-center gap-3 rounded-lg bg-gradient-to-r from-[#D4A900] to-[#F5C400] font-bold text-black shadow-lg shadow-[#F5C400]/20 transition duration-300 hover:scale-[1.01] hover:from-[#F5C400] hover:to-[#FFD633]"
+                disabled={adminLoading}
+                className="group flex h-14 w-full items-center justify-center gap-3 rounded-lg bg-gradient-to-r from-[#D4A900] to-[#F5C400] font-bold text-black shadow-lg shadow-[#F5C400]/20 transition duration-300 hover:scale-[1.01] hover:from-[#F5C400] hover:to-[#FFD633] disabled:cursor-not-allowed disabled:opacity-60"
               >
-                LOGIN
 
-                <ArrowRight
-                  size={20}
-                  className="transition-transform group-hover:translate-x-1"
-                />
+                {adminLoading ? (
+                  <>
+                    <Loader2
+                      size={20}
+                      className="animate-spin"
+                    />
+
+                    LOGGING IN...
+                  </>
+                ) : (
+                  <>
+                    LOGIN
+
+                    <ArrowRight
+                      size={20}
+                      className="transition-transform group-hover:translate-x-1"
+                    />
+                  </>
+                )}
 
               </button>
 
             </form>
 
             {/* RESTRICTED ACCESS */}
+
             <div className="mt-6 rounded-xl border border-[#F5C400]/30 bg-[#F5C400]/5 p-5">
 
               <div className="flex gap-4">
@@ -543,16 +791,19 @@ const LoginPortal = () => {
           </section>
 
         </div>
+
       </main>
 
       {/* =====================================================
           FOOTER
       ====================================================== */}
+
       <footer className="border-t border-[#F5C400]/20 bg-[#0c0c0c]/95">
 
         <div className="mx-auto grid max-w-[1400px] gap-6 px-5 py-7 sm:px-8 lg:grid-cols-3 lg:px-12">
 
           {/* HELP */}
+
           <button
             type="button"
             onClick={() => navigate("/contact")}
@@ -579,11 +830,11 @@ const LoginPortal = () => {
           </button>
 
           {/* CONTACT */}
+
           <div className="border-y border-gray-800 py-4 lg:border-x lg:border-y-0 lg:px-10 lg:py-0">
 
-            {/* PHONE */}
             <a
-              href="tel:+2348012345678"
+              href="tel:08051388846"
               className="flex items-center gap-4 transition hover:text-[#F5C400]"
             >
 
@@ -593,12 +844,11 @@ const LoginPortal = () => {
               />
 
               <span className="text-sm text-gray-300">
-                +234 801 234 5678
+                08051388846
               </span>
 
             </a>
 
-            {/* EMAIL */}
             <a
               href="mailto:support@jamesautos.com"
               className="mt-2 flex items-center gap-4 transition hover:text-[#F5C400]"
@@ -618,6 +868,7 @@ const LoginPortal = () => {
           </div>
 
           {/* COPYRIGHT */}
+
           <div className="flex items-center gap-4 lg:justify-end">
 
             <Shield
@@ -642,9 +893,14 @@ const LoginPortal = () => {
         </div>
 
       </footer>
+
     </div>
   );
 };
+
+// =====================================================
+// BENEFIT COMPONENT
+// =====================================================
 
 const Benefit = ({
   icon,
