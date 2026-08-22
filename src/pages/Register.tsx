@@ -59,10 +59,21 @@ const Register = () => {
         throw new Error("Account could not be created.");
       }
 
-      setSuccess(
-        "Account created successfully. Please check your email to verify your account."
-      );
+      const { error: profileError } = await supabase.from("profiles").insert({
+        id: data.user.id,
+        full_name: fullName,
+        email: email,
+        phone: phone,
+        role: "customer",
+      });
 
+      if (profileError) {
+        throw profileError;
+      }
+
+      setSuccess(
+        "Account created successfully. Please check your email to verify your account.",
+      );
       setFullName("");
       setEmail("");
       setPhone("");
@@ -90,7 +101,6 @@ const Register = () => {
     <main className="min-h-screen bg-[#080d14] px-6 py-12 text-white">
       <div className="mx-auto flex min-h-[calc(100vh-6rem)] max-w-6xl items-center justify-center">
         <div className="grid w-full overflow-hidden rounded-3xl border border-white/10 bg-[#111720] shadow-2xl lg:grid-cols-2">
-
           {/* LEFT SIDE */}
           <div className="hidden min-h-[700px] flex-col justify-between bg-yellow-500 p-10 text-black lg:flex">
             <div>
@@ -100,9 +110,7 @@ const Register = () => {
                 </div>
 
                 <div>
-                  <h1 className="text-xl font-black">
-                    JAMESAUTOS
-                  </h1>
+                  <h1 className="text-xl font-black">JAMESAUTOS</h1>
 
                   <p className="text-xs font-medium uppercase tracking-widest">
                     Premium Vehicles
@@ -123,9 +131,8 @@ const Register = () => {
               </h2>
 
               <p className="mt-6 max-w-md leading-7 text-black/70">
-                Create your JamesAutos account and get access to
-                our premium vehicles, enquiries and customer
-                services.
+                Create your JamesAutos account and get access to our premium
+                vehicles, enquiries and customer services.
               </p>
             </div>
 
@@ -136,7 +143,6 @@ const Register = () => {
 
           {/* RIGHT SIDE */}
           <div className="p-7 sm:p-10 lg:p-12">
-
             <div className="mb-8">
               <p className="text-sm font-semibold uppercase tracking-[0.3em] text-yellow-500">
                 Create Account
@@ -165,11 +171,7 @@ const Register = () => {
               </div>
             )}
 
-            <form
-              onSubmit={handleSubmit}
-              className="space-y-5"
-            >
-
+            <form onSubmit={handleSubmit} className="space-y-5">
               {/* FULL NAME */}
               <div>
                 <label
@@ -252,16 +254,10 @@ const Register = () => {
 
                   <button
                     type="button"
-                    onClick={() =>
-                      setShowPassword(!showPassword)
-                    }
+                    onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-yellow-500"
                   >
-                    {showPassword ? (
-                      <EyeOff size={19} />
-                    ) : (
-                      <Eye size={19} />
-                    )}
+                    {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
                   </button>
                 </div>
               </div>
@@ -278,15 +274,9 @@ const Register = () => {
                 <div className="relative">
                   <input
                     id="confirmPassword"
-                    type={
-                      showConfirmPassword
-                        ? "text"
-                        : "password"
-                    }
+                    type={showConfirmPassword ? "text" : "password"}
                     value={confirmPassword}
-                    onChange={(e) =>
-                      setConfirmPassword(e.target.value)
-                    }
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Confirm your password"
                     required
                     className="h-13 w-full rounded-lg border border-white/10 bg-[#080d14] px-4 pr-12 text-sm outline-none transition placeholder:text-gray-600 focus:border-yellow-500"
@@ -294,11 +284,7 @@ const Register = () => {
 
                   <button
                     type="button"
-                    onClick={() =>
-                      setShowConfirmPassword(
-                        !showConfirmPassword
-                      )
-                    }
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-yellow-500"
                   >
                     {showConfirmPassword ? (
@@ -318,10 +304,7 @@ const Register = () => {
               >
                 {loading ? (
                   <>
-                    <Loader2
-                      size={20}
-                      className="animate-spin"
-                    />
+                    <Loader2 size={20} className="animate-spin" />
                     Creating Account...
                   </>
                 ) : (
@@ -343,7 +326,6 @@ const Register = () => {
                 Login
               </Link>
             </p>
-
           </div>
         </div>
       </div>
