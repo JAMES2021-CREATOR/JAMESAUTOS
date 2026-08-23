@@ -50,10 +50,10 @@ const CustomerLayout = ({
     },
 
     {
-      name: "Browse Cars",
-      path: "/customer/cars",
-      icon: Car,
-    },
+  name: "Vehicles",
+  path: "/customer/vehicles",
+  icon: Car,
+},
 
     {
       name: "Saved Cars",

@@ -21,6 +21,7 @@ import AdminResetPassword from "./pages/AdminResetPassword";
 import CustomerLayout from "./pages/customer/CustomerLayout";
 import CustomerDashboard from "./pages/customer/CustomerDashboard";
 import CustomerCars from "./pages/customer/CustomerCars";
+import CustomerVehicles from "./pages/customer/CustomerVehicles";
 
 // ================= ADMIN =================
 import AdminLayout from "./pages/admin/AdminLayout";
@@ -94,7 +95,14 @@ const CustomerRoutes = () => {
           </CustomerLayout>
         }
       />
-
+      <Route
+        path="/customer/vehicles"
+        element={
+          <CustomerLayout>
+            <CustomerVehicles />
+          </CustomerLayout>
+        }
+      />
       <Route
         path="/customer/saved-cars"
         element={
