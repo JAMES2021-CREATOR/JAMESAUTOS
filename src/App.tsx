@@ -20,8 +20,11 @@ import AdminResetPassword from "./pages/AdminResetPassword";
 // ================= CUSTOMER =================
 import CustomerLayout from "./pages/customer/CustomerLayout";
 import CustomerDashboard from "./pages/customer/CustomerDashboard";
-import CustomerCars from "./pages/customer/CustomerCars";
 import CustomerVehicles from "./pages/customer/CustomerVehicles";
+import CustomerVehicleDetails from "./pages/customer/CustomerVehicleDetails";
+import SavedCars from "./pages/customer/SavedCars";
+import CustomerTestDrives from "./pages/customer/CustomerTestDrives";
+import CustomerMessages from "./pages/customer/CustomerMessages";
 
 // ================= ADMIN =================
 import AdminLayout from "./pages/admin/AdminLayout";
@@ -78,6 +81,8 @@ const AuthRoutes = () => {
 const CustomerRoutes = () => {
   return (
     <Routes>
+      {/* CUSTOMER DASHBOARD */}
+
       <Route
         path="/customer/dashboard"
         element={
@@ -87,14 +92,8 @@ const CustomerRoutes = () => {
         }
       />
 
-      <Route
-        path="/customer/cars"
-        element={
-          <CustomerLayout>
-            <CustomerCars />
-          </CustomerLayout>
-        }
-      />
+      {/* CUSTOMER VEHICLES */}
+
       <Route
         path="/customer/vehicles"
         element={
@@ -103,32 +102,53 @@ const CustomerRoutes = () => {
           </CustomerLayout>
         }
       />
+
+      {/* CUSTOMER VEHICLE DETAILS */}
+
+      <Route
+        path="/customer/vehicles/:id"
+        element={
+          <CustomerLayout>
+            <CustomerVehicleDetails />
+          </CustomerLayout>
+        }
+      />
+
+      {/* SAVED CARS */}
+
       <Route
         path="/customer/saved-cars"
         element={
           <CustomerLayout>
-            <div className="text-white">Saved Cars</div>
+            <SavedCars />
           </CustomerLayout>
         }
       />
 
-      <Route
-        path="/customer/test-drives"
-        element={
-          <CustomerLayout>
-            <div className="text-white">Test Drives</div>
-          </CustomerLayout>
-        }
-      />
+      {/* TEST DRIVES */}
+<Route
+  path="/customer/test-drives"
+  element={
+    <CustomerLayout>
+      <CustomerTestDrives />
+    </CustomerLayout>
+  }
+/>
+     
 
+      {/* MESSAGES */}
+
+     
       <Route
-        path="/customer/messages"
-        element={
-          <CustomerLayout>
-            <div className="text-white">Messages</div>
-          </CustomerLayout>
-        }
-      />
+  path="/customer/messages"
+  element={
+    <CustomerLayout>
+      <CustomerMessages />
+    </CustomerLayout>
+  }
+/>
+
+      {/* PROFILE */}
 
       <Route
         path="/customer/profile"
@@ -149,6 +169,8 @@ const CustomerRoutes = () => {
 const AdminRoutes = () => {
   return (
     <Routes>
+      {/* ADMIN DASHBOARD */}
+
       <Route
         path="/admin/dashboard"
         element={
@@ -158,6 +180,8 @@ const AdminRoutes = () => {
         }
       />
 
+      {/* ADMIN VEHICLES */}
+
       <Route
         path="/admin/vehicles"
         element={
@@ -166,6 +190,8 @@ const AdminRoutes = () => {
           </AdminLayout>
         }
       />
+
+      {/* ADMIN MESSAGES */}
 
       <Route
         path="/admin/messages"
@@ -188,17 +214,26 @@ const AppContent = () => {
 
   const path = location.pathname;
 
+  // ====================================================
   // CUSTOMER PORTAL
+  // ====================================================
+
   if (path.startsWith("/customer")) {
     return <CustomerRoutes />;
   }
 
+  // ====================================================
   // ADMIN PORTAL
+  // ====================================================
+
   if (path.startsWith("/admin")) {
     return <AdminRoutes />;
   }
 
-  // AUTH PAGES
+  // ====================================================
+  // AUTH
+  // ====================================================
+
   if (
     path === "/login" ||
     path === "/register" ||
@@ -207,7 +242,10 @@ const AppContent = () => {
     return <AuthRoutes />;
   }
 
+  // ====================================================
   // PUBLIC WEBSITE
+  // ====================================================
+
   return <PublicWebsite />;
 };
 
