@@ -747,5 +747,4 @@ const AdminMessages = () => {
     </div>
   );
 };
-
 export default AdminMessages;

@@ -111,7 +111,6 @@ const LoginPortal = () => {
 
       // Customer successfully logged in
       navigate("/customer/dashboard");
-
     } catch (error) {
       const message =
         error instanceof Error
@@ -119,7 +118,6 @@ const LoginPortal = () => {
           : "Login failed. Please try again.";
 
       setCustomerError(message);
-
     } finally {
       setCustomerLoading(false);
     }
@@ -146,6 +144,10 @@ const LoginPortal = () => {
     try {
       setAdminLoading(true);
 
+      // ============================================
+      // 1. AUTHENTICATE WITH SUPABASE
+      // ============================================
+
       const { data, error } =
         await supabase.auth.signInWithPassword({
           email: adminEmail.trim(),
@@ -160,7 +162,54 @@ const LoginPortal = () => {
         throw new Error("Unable to log you in.");
       }
 
-      // Remember login preference
+      // ============================================
+      // 2. GET USER PROFILE AND ROLE
+      // ============================================
+
+      const { data: profile, error: profileError } =
+        await supabase
+          .from("profiles")
+          .select("id, email, role")
+          .eq("id", data.user.id)
+          .maybeSingle();
+
+      if (profileError) {
+        await supabase.auth.signOut();
+        throw profileError;
+      }
+
+      // ============================================
+      // 3. PROFILE DOES NOT EXIST
+      // ============================================
+
+      if (!profile) {
+        await supabase.auth.signOut();
+
+        setAdminError(
+          "Admin access denied. Your account is not authorized."
+        );
+
+        return;
+      }
+
+      // ============================================
+      // 4. CHECK ADMIN ROLE
+      // ============================================
+
+      if (profile.role !== "admin") {
+        await supabase.auth.signOut();
+
+        setAdminError(
+          "Access denied. This account is not authorized for the Admin Portal."
+        );
+
+        return;
+      }
+
+      // ============================================
+      // 5. REMEMBER ADMIN LOGIN
+      // ============================================
+
       if (adminRemember) {
         localStorage.setItem(
           "adminRemember",
@@ -172,15 +221,11 @@ const LoginPortal = () => {
         );
       }
 
-      /*
-       * TEMPORARY ADMIN LOGIN
-       *
-       * Later we will check the user's role
-       * from Supabase before allowing access.
-       */
+      // ============================================
+      // 6. ADMIN AUTHORIZED
+      // ============================================
 
       navigate("/admin/dashboard");
-
     } catch (error) {
       const message =
         error instanceof Error
@@ -188,7 +233,6 @@ const LoginPortal = () => {
           : "Admin login failed. Please try again.";
 
       setAdminError(message);
-
     } finally {
       setAdminLoading(false);
     }
@@ -280,8 +324,6 @@ const LoginPortal = () => {
           ==================================================== */}
 
           <section className="rounded-2xl border border-[#F5C400]/30 bg-[#111111]/95 p-6 shadow-2xl backdrop-blur-xl transition duration-300 hover:border-[#F5C400]/60 sm:p-8 lg:p-10">
-
-            {/* ICON */}
 
             <div className="flex justify-center">
 
@@ -567,8 +609,6 @@ const LoginPortal = () => {
           ==================================================== */}
 
           <section className="rounded-2xl border border-[#F5C400]/30 bg-[#111111]/95 p-6 shadow-2xl backdrop-blur-xl transition duration-300 hover:border-[#F5C400]/60 sm:p-8 lg:p-10">
-
-            {/* ICON */}
 
             <div className="flex justify-center">
 
